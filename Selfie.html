@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    </head>
+    <body>
+            <h1 style="text-align: center;"> Voice Selfie  <img id="logo" src="download.jfif"> </h1> 
+            <div class="container">
+                <center>
+                    <a href="" id="link" download="myselfie.png"></a>
+                    <p style="color: red;"> <b> * Click on Allow on every popup before saying the voice command * </b></p>
+                    <h1> Say "Take my Selfie" </h1>
+                    <textarea  class="form-control" id="text" readonly="true" placeholder="When you say something it will appear here"></textarea>
+                    <br>
+                    <br>
+                    <button id="voice" class="btn btn-primary" onclick="start()"> Start </button>
+                    <p> Your webcam</p>
+                    
+                    <div id="cam" class="Pic">
+
+                    </div>
+                    <p> Your selfie will display here: </p>
+                    
+                    <div id="selfie" class="Pic">
+
+                    </div>
+
+
+
+
+                </center>
+            </div>
+            
+    </body>
+    <style>
+        #logo
+        {
+            border-radius: 75%;
+            width:200px;
+            height:100px;
+        }
+        .Pic{
+            height:300;
+            width:300;
+            border-color: grey;
+            border-style: ridge;
+            
+        }
+
+    </style>
+    <script>
+        var SpeechRecognition = window.webkitSpeechRecognition;
+        var Recognition = new SpeechRecognition();
+
+        function start()
+        {
+            document.getElementById("text").value = "";
+            Recognition.start();
+        }
+        Recognition.onresult = function(event)
+        {
+           console.log(event);
+           var content = event.results[0][0].transcript;
+
+           document.getElementById("text").value = content;
+           console.log(content);
+           if ( content == "Take my selfie")
+           {
+               console.log("Take my selfie –- ");
+               speak();
+           }
+           speak();
+           Webcam.attach(cam);
+           setTimeout(function()
+           {
+              Selfie();
+              save();
+           }, 5000)
+        }
+        function speak()
+        {
+            var a = window.speechSynthesis;
+            var b = "Taking your selfie in 5 seconds"
+             var speak = new SpeechSynthesisUtterance(b);
+             a.speak(speak);
+        }
+        Webcam.set({
+            width:300,
+            height:300,
+            image_format: "png",
+            png_quality: 90
+        });
+        var cam = document.getElementById("cam");
+        function Selfie()
+        {
+            Webcam.snap(function(data_uri){
+             document.getElementById("selfie").innerHTML = '<img id="pic" src="'+data_uri+'"/>';
+            });
+        }
+        function save()
+        {
+            var link = document.getElementById("link");
+            var img = document.getElementById("pic").src;
+            link.href = img
+            link.click();
+        }
+        
+
+    </script>
+</html>
